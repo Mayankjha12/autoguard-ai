@@ -44,6 +44,47 @@ export default function RiskEnginePage() {
 
       </div>
 
+      {/* ACTIVE THREATS */}
+
+<div className="grid md:grid-cols-3 gap-6">
+
+{[
+  {
+    title: "Taiwan Chip Supply",
+    status: "Critical",
+    color: "text-red-400",
+  },
+  {
+    title: "Red Sea Shipping",
+    status: "Delayed",
+    color: "text-yellow-400",
+  },
+  {
+    title: "Vietnam Capacity",
+    status: "Stable",
+    color: "text-green-400",
+  },
+].map((item) => (
+  <div
+    key={item.title}
+    className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"
+  >
+    <p className="text-slate-400 text-sm">
+      Active Threat
+    </p>
+
+    <h3 className="mt-3 font-semibold">
+      {item.title}
+    </h3>
+
+    <p className={`mt-2 font-bold ${item.color}`}>
+      {item.status}
+    </p>
+  </div>
+))}
+
+</div>
+
       {/* ML + FORECAST */}
       <div className="grid lg:grid-cols-2 gap-6">
 
@@ -94,9 +135,15 @@ export default function RiskEnginePage() {
               XGBoost demand forecasting
             </p>
 
-            <div className="mt-8 h-[220px] rounded-2xl border border-slate-800 bg-slate-800/60 flex items-center justify-center text-slate-400">
-              Forecast Chart (Coming Soon)
-            </div>
+            <div className="mt-8 h-[220px] rounded-2xl border border-slate-800 bg-slate-800/60 flex items-end justify-center gap-4 p-6">
+  {[60, 90, 75, 120, 150, 130].map((h, i) => (
+    <div
+      key={i}
+      className="w-8 bg-cyan-500 rounded-t"
+      style={{ height: `${h}px` }}
+    />
+  ))}
+</div>
           </div>
 
         </div>
@@ -146,6 +193,45 @@ export default function RiskEnginePage() {
               </div>
             ))}
 
+<div className="mt-8">
+
+<h3 className="font-semibold mb-4">
+  Risk Heat Index
+</h3>
+
+<div className="space-y-4">
+
+  {[
+    { region: "China", score: 89 },
+    { region: "Taiwan", score: 81 },
+    { region: "India", score: 31 },
+    { region: "Vietnam", score: 24 },
+  ].map((item) => (
+    <div key={item.region}>
+
+      <div className="flex justify-between text-sm mb-2">
+        <span>{item.region}</span>
+        <span>{item.score}</span>
+      </div>
+
+      <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+
+        <div
+          className="h-full bg-cyan-500"
+          style={{
+            width: `${item.score}%`,
+          }}
+        />
+
+      </div>
+
+    </div>
+  ))}
+
+</div>
+
+</div>
+
           </div>
         </div>
       </div>
@@ -156,13 +242,60 @@ export default function RiskEnginePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-purple-500/5" />
 
         <div className="relative z-10">
-          <h2 className="text-xl font-semibold">AI Risk Explanation</h2>
+        <div className="flex items-center justify-between">
+  <h2 className="text-xl font-semibold">
+    AI Risk Explanation
+  </h2>
+
+  <span className="px-3 py-1 rounded-full text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+    AI Generated
+  </span>
+</div>
 
           <p className="text-slate-300 mt-4 leading-8">
             Risk increased due to delivery delays,
             semiconductor shortages and geopolitical volatility in East Asia.
             AI recommends shifting sourcing volume towards Vietnam and India-based suppliers.
           </p>
+          <div className="mt-8 grid md:grid-cols-3 gap-4">
+
+  <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700">
+
+    <p className="text-slate-400 text-sm">
+      Recommended Action
+    </p>
+
+    <p className="mt-2 text-cyan-400 font-semibold">
+      Shift sourcing to Vietnam
+    </p>
+
+  </div>
+
+  <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700">
+
+    <p className="text-slate-400 text-sm">
+      Expected Savings
+    </p>
+
+    <p className="mt-2 text-green-400 font-semibold">
+      $4.2M
+    </p>
+
+  </div>
+
+  <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700">
+
+    <p className="text-slate-400 text-sm">
+      Risk Reduction
+    </p>
+
+    <p className="mt-2 text-green-400 font-semibold">
+      34%
+    </p>
+
+  </div>
+
+</div>
         </div>
       </div>
 

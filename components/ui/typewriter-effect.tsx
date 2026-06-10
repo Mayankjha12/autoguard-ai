@@ -1,7 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, stagger, useAnimate, useInView } from "motion/react";
+import {
+  motion,
+  stagger,
+  useAnimate,
+  useInView,
+} from "framer-motion";
 import { useEffect } from "react";
 
 export const TypewriterEffect = ({
@@ -146,9 +151,9 @@ export const TypewriterEffectSmooth = ({
       )}
     >
       <motion.div
-        className="overflow-hidden pb-2"
-        initial={{ width: "0%" }}
-        whileInView={{ width: "fit-content" }}
+  className="overflow-hidden pb-2"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
         transition={{
           duration: 2,
           ease: "linear",

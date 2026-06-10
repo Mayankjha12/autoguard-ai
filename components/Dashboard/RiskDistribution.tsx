@@ -1,18 +1,24 @@
 'use client';
 
 import { useDashboard } from '@/context/DashboardContext';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+} from 'recharts';
 
 export default function RiskDistribution() {
   const { data } = useDashboard();
-  
+
   const riskDistribution = data.riskDistribution;
   const totalSuppliers = data.suppliers;
-  
+
   const colors = {
-    'Low': '#22c55e',
-    'Medium': '#eab308',
-    'High': '#ef4444'
+    Low: '#22c55e',
+    Medium: '#eab308',
+    High: '#ef4444',
   };
 
   return (
@@ -25,22 +31,32 @@ export default function RiskDistribution() {
         Supplier risk overview
       </p>
 
-      <div className="flex justify-center py-8">
-        <ResponsiveContainer width={200} height={200}>
+      {/* FIXED CHART */}
+      <div className="w-full h-[250px] mt-6">
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={riskDistribution}
+              dataKey="value"
               cx="50%"
               cy="50%"
               innerRadius={60}
               outerRadius={90}
               paddingAngle={5}
-              dataKey="value"
             >
               {riskDistribution.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={colors[entry.risk as keyof typeof colors]} />
+                <Cell
+                  key={index}
+                  fill={
+                    colors[
+                      entry.risk as keyof typeof colors
+                    ]
+                  }
+                />
               ))}
             </Pie>
+
+            <Tooltip />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -49,6 +65,7 @@ export default function RiskDistribution() {
         <p className="text-2xl font-bold text-white">
           {totalSuppliers}
         </p>
+
         <p className="text-slate-400 text-sm">
           Total Suppliers
         </p>
@@ -56,8 +73,19 @@ export default function RiskDistribution() {
 
       <div className="grid grid-cols-3 gap-4">
         {riskDistribution.map((item) => (
-          <div key={item.risk} className="text-center">
-            <p style={{ color: colors[item.risk as keyof typeof colors] }} className="text-2xl font-bold">
+          <div
+            key={item.risk}
+            className="text-center"
+          >
+            <p
+              style={{
+                color:
+                  colors[
+                    item.risk as keyof typeof colors
+                  ],
+              }}
+              className="text-2xl font-bold"
+            >
               {item.value}
             </p>
 

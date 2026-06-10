@@ -1,6 +1,10 @@
 'use client';
-
-import React, { createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 
 interface DashboardData {
   suppliers: number;
@@ -84,6 +88,68 @@ export function DashboardProvider({
   const [data, setData] = useState<DashboardData>(defaultData);
 
   const [searchInput, setSearchInput] = useState<SearchInput>({});
+  useEffect(() => {
+    const alertsPool = [
+      {
+        title: 'Taiwan semiconductor supply risk',
+        severity: 'High',
+        timestamp: '15 min ago',
+      },
+      {
+        title: 'Red Sea shipping delays detected',
+        severity: 'Medium',
+        timestamp: '30 min ago',
+      },
+      {
+        title: 'Lithium carbonate price surge',
+        severity: 'High',
+        timestamp: '1 hour ago',
+      },
+      {
+        title: 'Vietnam manufacturing capacity alert',
+        severity: 'Low',
+        timestamp: '2 hours ago',
+      },
+      {
+        title: 'China export restriction monitoring',
+        severity: 'High',
+        timestamp: '3 hours ago',
+      },
+    ];
+  
+    const interval = setInterval(() => {
+      setData((prev) => ({
+        ...prev,
+  
+        suppliers:
+          240 + Math.floor(Math.random() * 15),
+  
+        riskSuppliers:
+          15 + Math.floor(Math.random() * 8),
+  
+        inventoryHealth:
+          80 + Math.floor(Math.random() * 12),
+  
+        potentialSavings: `$${(
+          3.8 + Math.random() * 1.8
+        ).toFixed(1)}M`,
+  
+        alerts: [
+          alertsPool[
+            Math.floor(Math.random() * alertsPool.length)
+          ],
+          alertsPool[
+            Math.floor(Math.random() * alertsPool.length)
+          ],
+          alertsPool[
+            Math.floor(Math.random() * alertsPool.length)
+          ],
+        ],
+      }));
+    }, 30000);
+  
+    return () => clearInterval(interval);
+  }, []);
 
   const generateDataFromInput = (
     input: SearchInput
@@ -172,25 +238,19 @@ export function DashboardProvider({
 
       alerts: [
         {
-          title: `Supply disruption in ${
-            input.country || input.region || 'Asia'
-          }`,
+          title: 'Taiwan semiconductor supply risk',
           severity: 'High',
-          timestamp: '2 hours ago',
+          timestamp: '35 min ago',
         },
         {
-          title: `${
-            input.productCategory || 'Electronics'
-          } price spike alert`,
+          title: 'Red Sea shipping delays detected',
           severity: 'Medium',
-          timestamp: '4 hours ago',
+          timestamp: '1 hour ago',
         },
         {
-          title: `${
-            input.supplierName || 'Supplier'
-          } performance review required`,
-          severity: 'Low',
-          timestamp: '6 hours ago',
+          title: 'Lithium carbonate price surge',
+          severity: 'High',
+          timestamp: '3 hours ago',
         },
       ],
     };

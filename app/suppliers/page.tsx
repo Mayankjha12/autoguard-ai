@@ -49,9 +49,19 @@ export default function SuppliersPage() {
 
       {/* HEADER */}
       <div className="mb-10">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-          Supplier Intelligence Center
-        </h1>
+
+  <div className="flex items-center gap-3">
+
+    <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+      Supplier Intelligence Center
+    </h1>
+
+    <span className="px-3 py-1 rounded-full text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+      AI Powered
+    </span>
+
+  </div>
+        
 
         <p className="text-slate-400 mt-2">
           AI-powered supplier monitoring & risk analytics
@@ -243,6 +253,58 @@ export default function SuppliersPage() {
         ))}
 
       </div>
+
+      {/* SUPPLIER RISK DISTRIBUTION */}
+
+<div className="mt-12 rounded-3xl p-6 bg-slate-900/70 border border-slate-800">
+
+<h2 className="text-xl font-semibold mb-6">
+  Supplier Risk Distribution
+</h2>
+
+<div className="space-y-4">
+
+  {[
+    {
+      label: "Low Risk",
+      value: 72,
+      color: "bg-green-500",
+    },
+    {
+      label: "Medium Risk",
+      value: 18,
+      color: "bg-yellow-500",
+    },
+    {
+      label: "High Risk",
+      value: 10,
+      color: "bg-red-500",
+    },
+  ].map((item) => (
+    <div key={item.label}>
+
+      <div className="flex justify-between text-sm mb-2">
+        <span>{item.label}</span>
+        <span>{item.value}%</span>
+      </div>
+
+      <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+
+        <div
+          className={`${item.color} h-full`}
+          style={{
+            width: `${item.value}%`,
+          }}
+        />
+
+      </div>
+
+    </div>
+  ))}
+
+</div>
+
+</div>
 
     </div>
   );

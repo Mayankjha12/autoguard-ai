@@ -13,7 +13,6 @@ import {
 } from 'framer-motion';
 
 import { useDashboard } from '@/context/DashboardContext';
-import { TypewriterEffectSmooth } from '@/components/ui/typewriter-effect';
 
 const COLORS_TOP = ['#06B6D4', '#2563EB', '#7C3AED', '#0EA5E9'];
 
@@ -49,16 +48,6 @@ export default function Header() {
     0px 4px 30px ${color}
   `;
 
-  const words = [
-    { text: 'AI-Powered' },
-    { text: 'Supply' },
-    { text: 'Chain' },
-    {
-      text: 'Intelligence',
-      className: 'text-cyan-400',
-    },
-  ];
-
   return (
     <motion.section
       style={{ backgroundImage }}
@@ -85,9 +74,15 @@ export default function Header() {
       {/* Content */}
       <div className="relative z-10 flex w-full flex-col items-center justify-center px-6 text-center">
 
-        {/* HERO TITLE (TOP SPACE FIXED) */}
-        <div className="mb-2 -mt-8 flex justify-center">
-          <TypewriterEffectSmooth words={words} />
+        {/* HERO TITLE */}
+        <div className="mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
+            AI-Powered Supply Chain
+          </h1>
+
+          <h1 className="mt-2 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-cyan-400">
+            Intelligence
+          </h1>
         </div>
 
         {/* Subtitle */}

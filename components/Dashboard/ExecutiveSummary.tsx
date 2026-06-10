@@ -1,4 +1,22 @@
+'use client';
+
+import { useDashboard } from '@/context/DashboardContext';
+
 export default function ExecutiveSummary() {
+  const { data } = useDashboard();
+
+  const riskReduction = Math.max(
+    15,
+    Math.round(
+      ((data.suppliers - data.riskSuppliers) /
+        data.suppliers) *
+        40
+    )
+  );
+
+  const leadTimeSaved =
+    7 + Math.floor(data.inventoryHealth / 20);
+
   return (
     <div
       className="
@@ -17,14 +35,12 @@ export default function ExecutiveSummary() {
         hover:shadow-[0_0_60px_rgba(6,182,212,0.08)]
       "
     >
-      {/* Background Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent" />
 
-      {/* Decorative Orb */}
       <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
 
       <div className="relative z-10">
-        {/* Header */}
+
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl lg:text-2xl font-semibold text-white">
@@ -53,7 +69,6 @@ export default function ExecutiveSummary() {
           </div>
         </div>
 
-        {/* Summary Content */}
         <div
           className="
             rounded-3xl
@@ -67,28 +82,33 @@ export default function ExecutiveSummary() {
           <p className="leading-8 text-slate-300">
             Current supply chain health score stands at{' '}
             <span className="font-semibold text-cyan-400">
-              88%
+              {data.inventoryHealth}%
             </span>.
-            Three suppliers require immediate
-            attention due to rising geopolitical
-            and logistics risks.
+            {' '}
+            <span className="font-semibold text-white">
+              {data.riskSuppliers}
+            </span>
+            {' '}
+            suppliers currently require monitoring due to
+            geopolitical exposure, logistics constraints
+            and sourcing concentration risks.
           </p>
 
           <p className="mt-4 leading-8 text-slate-300">
-            AI recommends shifting
+            AI recommends diversifying sourcing,
+            increasing safety stock levels and shifting
+            procurement volume toward lower-risk supplier
+            regions. Estimated optimization opportunity
+            remains at{' '}
             <span className="font-semibold text-cyan-400">
-              {' '}40% sourcing{' '}
+              {data.potentialSavings}
             </span>
-            from high-risk semiconductor suppliers
-            to Vietnam-based alternatives, reducing
-            operational exposure while maintaining
-            forecasted demand targets.
+            .
           </p>
         </div>
 
-        {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
-          {/* Risk Reduction */}
+
           <div
             className="
               group
@@ -102,27 +122,19 @@ export default function ExecutiveSummary() {
               via-slate-900/90
               to-slate-950/90
               p-5
-              backdrop-blur-xl
-              transition-all
-              duration-300
-              hover:-translate-y-1
-              hover:shadow-[0_0_30px_rgba(34,197,94,0.15)]
             "
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-transparent" />
-
             <div className="relative z-10">
               <p className="text-sm text-slate-400">
                 Risk Reduction
               </p>
 
               <h3 className="mt-2 text-3xl font-bold text-green-400">
-                34%
+                {riskReduction}%
               </h3>
             </div>
           </div>
 
-          {/* Cost Savings */}
           <div
             className="
               group
@@ -136,27 +148,19 @@ export default function ExecutiveSummary() {
               via-slate-900/90
               to-slate-950/90
               p-5
-              backdrop-blur-xl
-              transition-all
-              duration-300
-              hover:-translate-y-1
-              hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]
             "
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent" />
-
             <div className="relative z-10">
               <p className="text-sm text-slate-400">
                 Cost Savings
               </p>
 
               <h3 className="mt-2 text-3xl font-bold text-cyan-400">
-                $4.2M
+                {data.potentialSavings}
               </h3>
             </div>
           </div>
 
-          {/* Lead Time */}
           <div
             className="
               group
@@ -170,25 +174,19 @@ export default function ExecutiveSummary() {
               via-slate-900/90
               to-slate-950/90
               p-5
-              backdrop-blur-xl
-              transition-all
-              duration-300
-              hover:-translate-y-1
-              hover:shadow-[0_0_30px_rgba(234,179,8,0.15)]
             "
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-transparent" />
-
             <div className="relative z-10">
               <p className="text-sm text-slate-400">
                 Lead Time Saved
               </p>
 
               <h3 className="mt-2 text-3xl font-bold text-yellow-400">
-                11 Days
+                {leadTimeSaved} Days
               </h3>
             </div>
           </div>
+
         </div>
       </div>
     </div>
