@@ -1,25 +1,188 @@
+'use client';
+
+import React, { useEffect } from 'react';
+import Link from 'next/link';
+import { Search, RefreshCw, BarChart3 } from 'lucide-react';
+import { Canvas } from '@react-three/fiber';
+import { Stars } from '@react-three/drei';
+import {
+  motion,
+  animate,
+  useMotionTemplate,
+  useMotionValue,
+} from 'framer-motion';
+
+import { useDashboard } from '@/context/DashboardContext';
+import { TypewriterEffectSmooth } from '@/components/ui/typewriter-effect';
+
+const COLORS_TOP = ['#06B6D4', '#2563EB', '#7C3AED', '#0EA5E9'];
+
 export default function Header() {
-    return (
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold text-white">
-            Command Center
-          </h1>
-  
-          <p className="text-slate-400 mt-2">
-            Real-time supply chain intelligence dashboard
-          </p>
+  const { resetDashboard, searchInput } = useDashboard();
+
+  const hasActiveSearch = Object.keys(searchInput).length > 0;
+
+  const color = useMotionValue(COLORS_TOP[0]);
+
+  useEffect(() => {
+    animate(color, COLORS_TOP, {
+      ease: 'easeInOut',
+      duration: 8,
+      repeat: Infinity,
+      repeatType: 'mirror',
+    });
+  }, [color]);
+
+  const backgroundImage = useMotionTemplate`
+    radial-gradient(
+      125% 125% at 50% 0%,
+      #020617 40%,
+      ${color}
+    )
+  `;
+
+  const border = useMotionTemplate`
+    1px solid ${color}
+  `;
+
+  const boxShadow = useMotionTemplate`
+    0px 4px 30px ${color}
+  `;
+
+  const words = [
+    { text: 'AI-Powered' },
+    { text: 'Supply' },
+    { text: 'Chain' },
+    {
+      text: 'Intelligence',
+      className: 'text-cyan-400',
+    },
+  ];
+
+  return (
+    <motion.section
+      style={{ backgroundImage }}
+      className="relative flex min-h-screen w-full items-center justify-center overflow-hidden"
+    >
+      {/* Stars Background */}
+      <div className="absolute inset-0 z-0 h-full w-full">
+        <Canvas camera={{ position: [0, 0, 1] }}>
+          <Stars
+            radius={100}
+            depth={50}
+            count={4000}
+            factor={4}
+            saturation={0}
+            fade
+            speed={1.5}
+          />
+        </Canvas>
+      </div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 z-0 bg-black/20" />
+
+      {/* Content */}
+      <div className="relative z-10 flex w-full flex-col items-center justify-center px-6 text-center">
+
+        {/* HERO TITLE (TOP SPACE FIXED) */}
+        <div className="mb-2 -mt-8 flex justify-center">
+          <TypewriterEffectSmooth words={words} />
         </div>
-  
-        <div className="flex gap-3">
-          <button className="px-4 py-2 rounded-xl bg-slate-800 text-white">
-            Export
-          </button>
-  
-          <button className="px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold">
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="max-w-4xl text-lg leading-relaxed text-slate-300 md:text-xl"
+        >
+          Monitor suppliers, predict disruptions,
+          optimize inventory, reduce operational risk,
+          and make smarter supply chain decisions with
+          advanced AI insights.
+        </motion.p>
+
+        {/* Search Status */}
+        {hasActiveSearch && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-6 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-5 py-2 text-sm text-cyan-300"
+          >
+            Dashboard updated with your latest search filters
+          </motion.div>
+        )}
+
+        {/* Buttons */}
+        <div className="mt-12 flex flex-wrap justify-center gap-4">
+
+          <Link href="/search">
+            <motion.button
+              style={{ border, boxShadow }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="rounded-full bg-slate-950/40 px-7 py-3 text-white backdrop-blur-md transition-all"
+            >
+              <div className="flex items-center gap-2">
+                <Search size={18} />
+                Suppliers
+              </div>
+            </motion.button>
+          </Link>
+
+          {hasActiveSearch && (
+            <Link href="/dashboard#results">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="rounded-full bg-cyan-500 px-7 py-3 font-semibold text-black transition-all hover:bg-cyan-400"
+              >
+                <div className="flex items-center gap-2">
+                  <BarChart3 size={18} />
+                  View Results
+                </div>
+              </motion.button>
+            </Link>
+          )}
+
+          {hasActiveSearch && (
+            <motion.button
+              onClick={resetDashboard}
+              style={{ border, boxShadow }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="rounded-full bg-slate-950/40 px-7 py-3 text-white backdrop-blur-md transition-all"
+            >
+              <div className="flex items-center gap-2">
+                <RefreshCw size={18} />
+                Reset Filters
+              </div>
+            </motion.button>
+          )}
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="
+              rounded-full
+              border border-cyan-500/30
+              bg-cyan-500/10
+              px-7 py-3
+              font-semibold
+              text-cyan-300
+              backdrop-blur-md
+              transition-all
+              hover:bg-cyan-500/20
+              hover:text-cyan-200
+              hover:shadow-[0_0_25px_rgba(6,182,212,0.35)]
+            "
+          >
             Generate Report
-          </button>
+          </motion.button>
+
         </div>
       </div>
-    );
-  }
+    </motion.section>
+  );
+}
