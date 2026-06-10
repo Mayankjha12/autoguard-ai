@@ -95,6 +95,9 @@ https://autoguard-ai-beta.vercel.app/
 Demo Video:
 https://youtu.be/ASbrDuELrro
 
+Presentation:
+https://drive.google.com/file/d/1Ls2dW1fnVQS7LC7AZb8_84f5quI3luHK/view?usp=sharing
+
 ---
 
 ## Future Scope
