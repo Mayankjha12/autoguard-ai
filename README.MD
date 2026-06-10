@@ -73,18 +73,6 @@ AutoGuard AI addresses these challenges by providing intelligent risk monitoring
 
 ---
 
-## Project Modules
-
-```text
-Dashboard
-Risk Engine
-Supplier Intelligence Center
-AI Copilot
-Meeting Intelligence
-```
-
----
-
 ## Team
 
 ### OpAmp4All
