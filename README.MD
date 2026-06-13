@@ -14,6 +14,11 @@ AutoGuard AI addresses these challenges by providing intelligent risk monitoring
 
 ---
 
+
+##To initialize
+-npm intall
+
+
 ## Features
 
 ### Risk Engine
