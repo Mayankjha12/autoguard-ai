@@ -5,17 +5,17 @@ import { useDashboard } from '@/context/DashboardContext';
 export default function ExecutiveSummary() {
   const { data } = useDashboard();
 
-  const riskReduction = Math.max(
-    15,
-    Math.round(
-      ((data.suppliers - data.riskSuppliers) /
-        data.suppliers) *
-        40
-    )
+  const riskReduction = Math.round(
+    ((data.suppliers - data.riskSuppliers) /
+      data.suppliers) *
+      100
   );
 
   const leadTimeSaved =
-    7 + Math.floor(data.inventoryHealth / 20);
+  Math.max(
+    3,
+    Math.floor(data.inventoryHealth / 8)
+  );
 
   return (
     <div
@@ -53,17 +53,7 @@ export default function ExecutiveSummary() {
           </div>
 
           <div
-            className="
-              rounded-full
-              border
-              border-cyan-500/20
-              bg-cyan-500/10
-              px-4
-              py-1.5
-              text-xs
-              font-medium
-              text-cyan-400
-            "
+            className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1.5 text-xs font-medium text-cyan-400"
           >
             AI Generated
           </div>
@@ -80,31 +70,33 @@ export default function ExecutiveSummary() {
           "
         >
           <p className="leading-8 text-slate-300">
-            Current supply chain health score stands at{' '}
-            <span className="font-semibold text-cyan-400">
-              {data.inventoryHealth}%
-            </span>.
-            {' '}
-            <span className="font-semibold text-white">
-              {data.riskSuppliers}
-            </span>
-            {' '}
-            suppliers currently require monitoring due to
-            geopolitical exposure, logistics constraints
-            and sourcing concentration risks.
-          </p>
+  Current supply chain health score stands at{' '}
+  <span className="font-semibold text-cyan-400">
+    {data.inventoryHealth}%
+  </span>
+  . AI analysis has identified{' '}
+  <span className="font-semibold text-white">
+    {data.riskSuppliers}
+  </span>{' '}
+  suppliers requiring proactive monitoring due to elevated logistics,
+  sourcing and operational risks. The supplier network currently spans{' '}
+  <span className="font-semibold text-cyan-400">
+    {data.suppliers}
+  </span>{' '}
+  active partners across multiple regions.
+</p>
 
-          <p className="mt-4 leading-8 text-slate-300">
-            AI recommends diversifying sourcing,
-            increasing safety stock levels and shifting
-            procurement volume toward lower-risk supplier
-            regions. Estimated optimization opportunity
-            remains at{' '}
-            <span className="font-semibold text-cyan-400">
-              {data.potentialSavings}
-            </span>
-            .
-          </p>
+<p className="mt-4 leading-8 text-slate-300">
+  Based on current risk exposure and inventory conditions, AI recommends
+  diversifying procurement channels, strengthening inventory buffers and
+  prioritizing low-risk supplier regions. Estimated optimization potential
+  remains at{' '}
+  <span className="font-semibold text-cyan-400">
+    {data.potentialSavings}
+  </span>
+  , while maintaining service continuity and reducing supply-chain
+  disruption risks.
+</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">

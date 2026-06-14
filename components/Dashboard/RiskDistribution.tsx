@@ -31,7 +31,6 @@ export default function RiskDistribution() {
         Supplier risk overview
       </p>
 
-      {/* FIXED CHART */}
       <div className="w-full h-[250px] mt-6">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -56,7 +55,14 @@ export default function RiskDistribution() {
               ))}
             </Pie>
 
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#0f172a',
+                border: '1px solid #334155',
+                borderRadius: '12px',
+                color: '#fff',
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

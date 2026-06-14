@@ -46,10 +46,13 @@ export default function DemandForecast() {
               AI-predicted demand trends and growth insights
             </p>
           </div>
-
-          <button className="self-start rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-cyan-400 transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-500/20">
-            AI Forecast
-          </button>
+  
+  <button
+  onClick={() => window.location.reload()}
+  className="self-start rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-cyan-400 transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-500/20"
+>
+  Generate AI Forecast
+</button>
         </div>
 
         <div className="mb-8 h-[320px] rounded-3xl border border-slate-700/50 bg-slate-800/50 p-4 backdrop-blur-md">
@@ -76,11 +79,12 @@ export default function DemandForecast() {
                 }}
               />
 
-              <Bar
-                dataKey="demand"
-                fill="#06b6d4"
-                radius={[12, 12, 0, 0]}
-              />
+<Bar
+  dataKey="demand"
+  fill="#06b6d4"
+  radius={[12, 12, 0, 0]}
+  animationDuration={1200}
+/>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -118,9 +122,9 @@ export default function DemandForecast() {
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-transparent" />
 
             <div className="relative z-10">
-              <p className="text-sm text-slate-400">
-                Growth Rate
-              </p>
+            <p className="text-sm text-slate-400">
+  Forecast Growth
+</p>
 
               <h3
                 className={`mt-2 text-2xl font-bold ${

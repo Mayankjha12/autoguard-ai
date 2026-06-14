@@ -3,7 +3,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useEffect,
 } from 'react';
 
 interface DashboardData {
@@ -36,10 +35,10 @@ interface DashboardContextType {
 }
 
 const defaultData: DashboardData = {
-  suppliers: 247,
-  riskSuppliers: 18,
-  inventoryHealth: 82,
-  potentialSavings: '$4.2M',
+  suppliers: 100,
+  riskSuppliers: 12,
+  inventoryHealth: 84,
+  potentialSavings: '$5.5M',
 
   demandForecast: [
     { month: 'Jan', demand: 4000 },
@@ -88,169 +87,142 @@ export function DashboardProvider({
   const [data, setData] = useState<DashboardData>(defaultData);
 
   const [searchInput, setSearchInput] = useState<SearchInput>({});
-  useEffect(() => {
-    const alertsPool = [
-      {
-        title: 'Taiwan semiconductor supply risk',
-        severity: 'High',
-        timestamp: '15 min ago',
-      },
-      {
-        title: 'Red Sea shipping delays detected',
-        severity: 'Medium',
-        timestamp: '30 min ago',
-      },
-      {
-        title: 'Lithium carbonate price surge',
-        severity: 'High',
-        timestamp: '1 hour ago',
-      },
-      {
-        title: 'Vietnam manufacturing capacity alert',
-        severity: 'Low',
-        timestamp: '2 hours ago',
-      },
-      {
-        title: 'China export restriction monitoring',
-        severity: 'High',
-        timestamp: '3 hours ago',
-      },
-    ];
   
-    const interval = setInterval(() => {
-      setData((prev) => ({
-        ...prev,
-  
-        suppliers:
-          240 + Math.floor(Math.random() * 15),
-  
-        riskSuppliers:
-          15 + Math.floor(Math.random() * 8),
-  
-        inventoryHealth:
-          80 + Math.floor(Math.random() * 12),
-  
-        potentialSavings: `$${(
-          3.8 + Math.random() * 1.8
-        ).toFixed(1)}M`,
-  
-        alerts: [
-          alertsPool[
-            Math.floor(Math.random() * alertsPool.length)
-          ],
-          alertsPool[
-            Math.floor(Math.random() * alertsPool.length)
-          ],
-          alertsPool[
-            Math.floor(Math.random() * alertsPool.length)
-          ],
-        ],
-      }));
-    }, 30000);
-  
-    return () => clearInterval(interval);
-  }, []);
 
   const generateDataFromInput = (
     input: SearchInput
   ): DashboardData => {
-    const multiplier = input.region || input.country ? 1.5 : 1;
-
-    const riskFactor =
-      input.riskLevel === 'high'
-        ? 0.8
-        : input.riskLevel === 'medium'
-        ? 0.5
-        : 0.2;
-
+  
+    const highRisk =
+      input.riskLevel?.toLowerCase() === "high";
+  
+    const mediumRisk =
+      input.riskLevel?.toLowerCase() === "medium";
+  
+    const region =
+      input.region?.toLowerCase() || "";
+  
+    let suppliers = 247;
+    let riskSuppliers = 12;
+    let inventoryHealth = 91;
+    let savings = "$3.4M";
+  
+    if (highRisk) {
+      riskSuppliers = 22;
+      inventoryHealth = 72;
+      savings = "$6.8M";
+    } else if (mediumRisk) {
+      riskSuppliers = 14;
+      inventoryHealth = 84;
+      savings = "$5.1M";
+    }
+  
+    if (
+      region.includes("china") ||
+      region.includes("taiwan")
+    ) {
+      riskSuppliers += 5;
+      inventoryHealth -= 7;
+    }
+  
+    if (
+      region.includes("india") ||
+      region.includes("vietnam")
+    ) {
+      inventoryHealth += 4;
+    }
+  
     return {
-      suppliers: Math.floor(247 * multiplier),
-
-      riskSuppliers: Math.floor(18 * riskFactor),
-
-      inventoryHealth: Math.floor(
-        82 - riskFactor * 20
-      ),
-
-      potentialSavings: `$${(
-        4.2 * multiplier
-      ).toFixed(1)}M`,
-
+      suppliers,
+  
+      riskSuppliers,
+  
+      inventoryHealth,
+  
+      potentialSavings: savings,
+  
       demandForecast: [
-        {
-          month: 'Jan',
-          demand: 4000 + Math.floor(Math.random() * 2000),
-        },
-        {
-          month: 'Feb',
-          demand: 3000 + Math.floor(Math.random() * 2000),
-        },
-        {
-          month: 'Mar',
-          demand: 2000 + Math.floor(Math.random() * 2000),
-        },
-        {
-          month: 'Apr',
-          demand: 2780 + Math.floor(Math.random() * 2000),
-        },
-        {
-          month: 'May',
-          demand: 1890 + Math.floor(Math.random() * 2000),
-        },
-        {
-          month: 'Jun',
-          demand: 2390 + Math.floor(Math.random() * 2000),
-        },
+        { month: "Jan", demand: inventoryHealth * 45 },
+        { month: "Feb", demand: inventoryHealth * 47 },
+        { month: "Mar", demand: inventoryHealth * 50 },
+        { month: "Apr", demand: inventoryHealth * 53 },
+        { month: "May", demand: inventoryHealth * 57 },
+        { month: "Jun", demand: inventoryHealth * 61 },
       ],
-
+  
       supplyHealth: [
         {
           supplier:
             input.supplierName ||
-            input.supplierType ||
-            'Supplier A',
-          score: 85 + Math.floor(Math.random() * 10),
+            "Samsung SDI",
+          score: inventoryHealth,
         },
         {
-          supplier: 'Supplier B',
-          score: 72 + Math.floor(Math.random() * 10),
+          supplier: "Panasonic Energy",
+          score: inventoryHealth - 4,
         },
         {
-          supplier: 'Supplier C',
-          score: 90 + Math.floor(Math.random() * 5),
+          supplier: "Shanghai SemiTech",
+          score: inventoryHealth - 18,
         },
       ],
-
+  
       riskDistribution: [
         {
           risk: 'Low',
-          value: Math.floor(65 * multiplier),
+          value: suppliers - riskSuppliers - 25,
         },
         {
           risk: 'Medium',
-          value: Math.floor(20 * multiplier),
+          value: 25,
         },
         {
           risk: 'High',
-          value: Math.floor(15 * riskFactor),
+          value: riskSuppliers,
         },
       ],
-
+  
       alerts: [
         {
-          title: 'Taiwan semiconductor supply risk',
-          severity: 'High',
-          timestamp: '35 min ago',
+          title:
+            highRisk
+              ? "Taiwan semiconductor disruption risk"
+              : "Supplier performance stable",
+  
+          severity:
+            highRisk
+              ? "High"
+              : "Low",
+  
+          timestamp: "15 min ago",
         },
+  
         {
-          title: 'Red Sea shipping delays detected',
-          severity: 'Medium',
-          timestamp: '1 hour ago',
+          title:
+            mediumRisk
+              ? "Logistics delay detected"
+              : "Inventory levels healthy",
+  
+          severity:
+            mediumRisk
+              ? "Medium"
+              : "Low",
+  
+          timestamp: "30 min ago",
         },
+  
         {
-          title: 'Lithium carbonate price surge',
-          severity: 'High',
-          timestamp: '3 hours ago',
+          title:
+            inventoryHealth < 80
+              ? "Urgent procurement review recommended"
+              : "Supply chain operating normally",
+  
+          severity:
+            inventoryHealth < 80
+              ? "High"
+              : "Low",
+  
+          timestamp: "1 hour ago",
         },
       ],
     };

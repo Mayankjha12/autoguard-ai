@@ -10,7 +10,7 @@ export default function KPICards() {
     {
       quote: data.suppliers.toString(),
       name: "Total Suppliers",
-      title: "+12% vs last month",
+      title: "Global Network",
     },
     {
       quote: data.riskSuppliers.toString(),
@@ -25,7 +25,7 @@ export default function KPICards() {
     {
       quote: data.potentialSavings,
       name: "Potential Savings",
-      title: "AI Optimization",
+      title: "Optimization Opportunity",
     },
   ];
 
@@ -34,7 +34,7 @@ export default function KPICards() {
       <InfiniteMovingCards
         items={items}
         direction="left"
-        speed="normal"
+        speed="slow"
         pauseOnHover={true}
         className="py-2"
       />

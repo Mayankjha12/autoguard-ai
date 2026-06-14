@@ -50,6 +50,25 @@ export default function AIAlerts() {
     }
   };
 
+  const sortedAlerts = [...data.alerts].sort(
+    (a, b) => {
+      const priority = {
+        High: 3,
+        Medium: 2,
+        Low: 1,
+      };
+
+      return (
+        (priority[
+          b.severity as keyof typeof priority
+        ] || 0) -
+        (priority[
+          a.severity as keyof typeof priority
+        ] || 0)
+      );
+    }
+  );
+
   return (
     <div className="relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-slate-900/80 backdrop-blur-xl p-6 shadow-xl transition-all duration-500 hover:shadow-[0_0_60px_rgba(6,182,212,0.08)]">
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent" />
@@ -75,16 +94,16 @@ export default function AIAlerts() {
           <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
 
           <span className="text-sm text-slate-400">
-            {data.alerts.length} Active Alerts
+            {data.alerts.length} Active AI Alerts
           </span>
         </div>
 
         <div className="space-y-4">
-          {data.alerts.map((alert, index) => (
+          {sortedAlerts.map((alert, index) => (
             <AlertCard
               key={index}
               title={alert.title}
-              description={alert.timestamp}
+              description={`${alert.severity} Priority • ${alert.timestamp}`}
               color={getSeverityColor(alert.severity)}
             />
           ))}
