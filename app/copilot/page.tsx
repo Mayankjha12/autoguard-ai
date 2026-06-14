@@ -20,7 +20,7 @@ export default function CopilotPage() {
     "Should I source EV batteries from CATL?",
     "Evaluate Samsung SDI for long-term sourcing",
     "What are the risks of sourcing semiconductors from Taiwan?",
-    "Suggest alternatives to Panasonic Energy for EV batteries",
+    "Suggest alternative suppliers to CATL outside China",
   ];
 
   const liveInsights = [
@@ -117,10 +117,10 @@ export default function CopilotPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch flex-1 min-h-0 overflow-hidden">
         
         {/* ================= LEFT SPLIT PANEL: CHAT UNIT ================= */}
-        <div className="lg:col-span-8 xl:col-span-9 flex flex-col rounded-xl border border-slate-800 bg-gradient-to-b from-slate-900 via-[#060b19] to-slate-950 shadow-xl overflow-hidden h-full min-h-0">
-          
-          <div className="px-4 py-3 border-b border-slate-800/60 bg-slate-950/40 flex items-center justify-between shrink-0">
-          <div className="p-4 border-b border-slate-800/60 flex flex-wrap gap-2">
+
+<div className="lg:col-span-8 xl:col-span-9 flex flex-col rounded-xl border border-slate-800 bg-gradient-to-b from-slate-900 via-[#060b19] to-slate-950 shadow-xl overflow-hidden h-full min-h-0">
+
+<div className="p-3 border-b border-slate-800/60 flex flex-wrap gap-2 bg-slate-950/40">
   {suggestedPrompts.map((prompt) => (
     <button
       key={prompt}
@@ -131,14 +131,17 @@ export default function CopilotPage() {
     </button>
   ))}
 </div>
-            <div>
-              <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">Ask AutoGuard AI</h2>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/5 border border-emerald-500/20 px-2 py-0.5 rounded">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" />
-              Online
-            </div>
-          </div>
+
+<div className="px-4 py-3 border-b border-slate-800/60 bg-slate-950/40 flex items-center justify-between">
+  <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+    Ask AutoGuard AI
+  </h2>
+
+  <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/5 border border-emerald-500/20 px-2 py-0.5 rounded">
+    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" />
+    Online
+  </div>
+</div>
 
           {/* CHAT TERMINAL LIST VIEW */}
           <div className="flex-1 p-4 space-y-4 overflow-y-auto scrollbar-thin min-h-0">
@@ -151,7 +154,7 @@ export default function CopilotPage() {
                   className={`flex ${msg.role === "user" ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-xl px-4 py-3 text-xs md:text-sm leading-6 shadow-md border ${
+                    className={`max-w-[95%] break-words rounded-xl px-4 py-3 text-xs md:text-sm leading-6 shadow-md border ${
                       msg.role === "user"
                         ? "bg-slate-950 border-slate-800 text-slate-200"
                         : "bg-gradient-to-br from-[#0c142c] to-[#040814] border-cyan-500/20 text-cyan-300"
@@ -160,7 +163,13 @@ export default function CopilotPage() {
                     <span className="text-[10px] font-black uppercase tracking-widest opacity-40 block mb-1.5">
                       {msg.role === "user" ? "Operator Terminal" : "AutoGuard Engine"}
                     </span>
-                    <div className="whitespace-pre-wrap font-medium">{msg.content}</div>
+                    <div
+  style={{
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
+  }}
+  className="whitespace-pre-wrap font-medium"
+>{msg.content}</div>
                   </div>
                 </motion.div>
               ))}
@@ -240,6 +249,4 @@ export default function CopilotPage() {
 
       </div>
 
-    </div>
-  );
-}
+    <
