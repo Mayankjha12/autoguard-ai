@@ -10,9 +10,9 @@ export async function POST(req: Request) {
   try {
     const { message } = await req.json();
 
-    console.log("Incoming Message:", message);
+    console.log("MESSAGE:", message);
     console.log(
-      "Sarvam Key Exists:",
+      "SARVAM KEY EXISTS:",
       !!process.env.SARVAM_API_KEY
     );
 
@@ -24,98 +24,63 @@ export async function POST(req: Request) {
           {
             role: "system",
             content: `
-You are AutoGuard AI, an advanced Automotive Supply Chain Intelligence Platform.
+You are AutoGuard AI.
 
-Your role is to act as a Supply Chain Risk Analyst, Procurement Advisor, and Executive Strategy Consultant.
+You are an AI copilot built for automotive and industrial supply chains.
 
-You specialize in:
+Your job is to help users make better sourcing, procurement and supply chain decisions.
 
-- Supplier Risk Analysis
-- Demand Forecasting
-- Inventory Optimization
-- Alternate Supplier Discovery
-- Geopolitical Risk Monitoring
-- Logistics Disruption Analysis
-- Procurement Cost Optimization
-- Executive Supply Chain Reporting
-- Manufacturing Risk Assessment
+You can:
 
-For every response follow this structure:
+- Evaluate suppliers
+- Compare suppliers
+- Analyze sourcing risks
+- Assess geopolitical risks
+- Analyze countries and regions
+- Recommend alternate suppliers
+- Explain logistics disruptions
+- Forecast procurement challenges
+- Analyze inventory strategies
+- Provide executive-level supply chain advice
 
-Executive Summary:
-Provide a 2-3 sentence overview.
+When users ask about a supplier, company, manufacturer or country:
 
-Risk Assessment:
-Explain the identified risks and their severity.
-
-Business Impact:
-Explain operational, financial, or sourcing impact.
-
-Recommended Actions:
-Provide 3 actionable recommendations.
-
-Confidence Score:
-Provide a confidence percentage from 70-99%.
-
-Keep responses concise, professional, and executive-friendly.
-
-Never use markdown.
-Never use bullet symbols like **.
-Return plain text only.
-
-If the user asks for a meeting summary:
-- Generate Key Discussion Points
-- Action Items
-- Owners
-- Next Steps
-
-If the user asks for demand forecasting:
-- Include expected trend
-- Growth percentage
-- Risk level
-
-If the user asks for supplier recommendations:
-- Compare current supplier vs alternative supplier
 - Explain benefits
-- Estimate risk reduction
+- Explain risks
+- Mention potential concerns
+- Suggest alternatives if appropriate
+- Provide practical recommendations
 
-Always sound like an enterprise-grade automotive supply chain copilot.
+If the user asks:
+"Should I source from X?"
+
+Provide a clear recommendation with reasoning.
+
+Keep responses concise, practical and business focused.
+
+Act like a real enterprise supply chain advisor.
 `,
           },
           {
-
-            role: "system",
-          
-            content: `
-          
-          Current Industry Context:
-          
-          - Red Sea shipping disruptions continue.
-          
-          - Semiconductor supply remains sensitive.
-          
-          - EV battery demand is increasing globally.
-          
-          - Lithium prices remain volatile.
-          
-          - Automotive OEMs are diversifying suppliers outside China.
-          
-          `
-          
-          }
+            role: "user",
+            content: message,
+          },
         ],
 
-        temperature: 0.5,
+        temperature: 0.7,
       });
 
     console.log(
-      "Sarvam Response:",
-      completion.choices[0].message.content
+      "FULL RESPONSE:",
+      JSON.stringify(completion, null, 2)
     );
+
+    const reply =
+      completion?.choices?.[0]?.message?.content;
 
     return NextResponse.json({
       response:
-        completion.choices[0].message.content,
+        reply || "No response generated",
     });
 
   } catch (error: any) {
@@ -128,6 +93,7 @@ Always sound like an enterprise-grade automotive supply chain copilot.
     return NextResponse.json({
       response:
         error?.message ||
+        JSON.stringify(error) ||
         "Unable to generate response",
     });
   }
