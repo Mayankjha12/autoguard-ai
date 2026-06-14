@@ -249,4 +249,6 @@ export default function CopilotPage() {
 
       </div>
 
-    <
+    </div>
+  );
+}
