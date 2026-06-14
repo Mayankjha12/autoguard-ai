@@ -1,13 +1,55 @@
 'use client';
 
 import { useDashboard } from '@/context/DashboardContext';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function ExecutiveSummary() {
   const { data } = useDashboard();
+  const [summary, setSummary] = useState("");
+  const [loadingSummary, setLoadingSummary] = useState(false);
 
   const riskReduction = Math.round(((data.suppliers - data.riskSuppliers) / data.suppliers) * 100);
   const leadTimeSaved = Math.max(3, Math.floor(data.inventoryHealth / 8));
+  const generateSummary = async () => {
+    setLoadingSummary(true);
+  
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: `
+  Generate an executive supply chain summary.
+  
+  Inventory Health: ${data.inventoryHealth}%
+  Total Suppliers: ${data.suppliers}
+  Risk Suppliers: ${data.riskSuppliers}
+  Potential Savings: ${data.potentialSavings}
+  
+  Provide:
+  1. Current Supply Chain Health
+  2. Key Risks
+  3. Cost Saving Opportunities
+  4. Recommended Actions
+  Give ans such that everything comes in chatbot area
+  
+  Keep response concise.
+          `,
+        }),
+      });
+  
+      const result = await res.json();
+  
+      setSummary(result.response || "Unable to generate summary");
+    } catch {
+      setSummary("Unable to generate summary");
+    }
+  
+    setLoadingSummary(false);
+  };
 
   return (
     <motion.div 
@@ -40,18 +82,30 @@ export default function ExecutiveSummary() {
             whileHover={{ backgroundColor: 'rgba(2, 6, 23, 0.4)', borderColor: 'rgba(99, 102, 241, 0.2)' }}
             className="rounded-xl border border-slate-800 bg-slate-950/40 p-5 border-l-4 border-l-indigo-500 transition-all duration-300"
           >
-            <p className="text-xs md:text-sm leading-relaxed text-slate-300">
-              Current supply chain health score stands at{' '}
-              <span className="font-extrabold text-cyan-400">{data.inventoryHealth}%</span>. 
-              AI analysis has identified{' '}
-              <span className="font-extrabold text-red-400">{data.riskSuppliers}</span> suppliers 
-              requiring proactive monitoring due to elevated logistics, sourcing and operational risks. 
-              The supplier network currently spans{' '}
-              <span className="font-bold text-white">{data.suppliers}</span> active partners across multiple regions.
-            </p>
-            <p className="mt-4 text-xs md:text-sm leading-relaxed text-slate-300 border-t border-slate-800/60 pt-4">
-              Based on current risk exposure and inventory conditions, AI recommends diversifying procurement channels, strengthening inventory buffers and prioritizing low-risk supplier regions. Estimated optimization potential remains at <span className="font-extrabold text-emerald-400">{data.potentialSavings}</span>.
-            </p>
+            {/* <p>...</p>
+            <p>...</p> */}
+            {!summary && !loadingSummary && (
+  <motion.button
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    onClick={generateSummary}
+    className="mt-4 w-full rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 py-3 text-sm font-bold text-white shadow-lg"
+  >
+    Generate AI Executive Summary
+  </motion.button>
+)}
+
+{loadingSummary && (
+  <div className="mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-4 text-cyan-400 text-sm font-semibold">
+    Generating AI Insights...
+  </div>
+)}
+
+{summary && (
+  <div className="mt-4 rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-sm text-slate-300 whitespace-pre-wrap">
+    {summary}
+  </div>
+)}
           </motion.div>
         </div>
 

@@ -1,8 +1,105 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function RiskEnginePage() {
+  const [scenario, setScenario] = useState("");
+const [loading, setLoading] = useState(false);
+
+const [riskData, setRiskData] = useState({
+  riskScore: 72,
+  disruptions: 14,
+  accuracy: 92,
+  inventoryHealth: 84,
+  recommendation: "Shift Route to Vietnam",
+savings: "$4.2M Sourcing Offset",
+});
+
+const analyzeScenario = async () => {
+  if (!scenario.trim()) return;
+
+  setLoading(true);
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: `
+You are a JSON API.
+
+Return ONLY valid JSON.
+No explanation.
+No reasoning.
+No markdown.
+No thinking.
+
+Analyze this supply chain scenario:
+
+${scenario}
+
+Estimate:
+
+1. Risk Score (0-100)
+2. Predicted Disruptions
+3. Forecast Accuracy
+4. Inventory Health
+5. Recommended Action
+6. Estimated Savings
+
+Return ONLY:
+
+{
+  "riskScore": 0,
+  "disruptions": 0,
+  "accuracy": 0,
+  "inventoryHealth": 0,
+  "recommendation": "",
+  "savings": ""
+}
+
+IMPORTANT:
+
+disruptions must be a NUMBER, not a list.
+`
+      }),
+    });
+
+    const data = await res.json();
+
+    try {
+      const raw = data.response || "";
+    
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    
+      if (!jsonMatch) {
+        throw new Error("No JSON Found");
+      }
+    
+      const parsed = JSON.parse(jsonMatch[0]);
+    
+      setRiskData({
+        riskScore: parsed.riskScore ?? 72,
+        disruptions: parsed.disruptions ?? 14,
+        accuracy: parsed.accuracy ?? 92,
+        inventoryHealth: parsed.inventoryHealth ?? 84,
+        recommendation: parsed.recommendation ?? "Monitor Supply Chain",
+        savings: parsed.savings ?? "$1M",
+      });
+    
+    } catch (e) {
+      console.log("JSON Parse Failed", e);
+    }
+
+  } catch (err) {
+    console.log(err);
+  }
+
+  setLoading(false);
+};
   return (
     <div className="min-h-screen bg-[#030712] text-white p-5 lg:p-6 space-y-6 selection:bg-cyan-500/30">
 
@@ -21,13 +118,58 @@ export default function RiskEnginePage() {
         </div>
       </div>
 
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-4">
+  <p className="text-xs font-bold text-slate-400 mb-2 uppercase">
+    AI Scenario Analysis
+  </p>
+
+
+  <div className="flex gap-3">
+    <input
+      value={scenario}
+      onChange={(e) => setScenario(e.target.value)}
+      placeholder="Example: Semiconductor sourcing from China with 30 day delays..."
+      className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm"
+    />
+
+    <button
+      onClick={analyzeScenario}
+      className="px-6 rounded-xl bg-cyan-500 text-black font-bold"
+    >
+      {loading ? "Analyzing..." : "Analyze"}
+    </button>
+  </div>
+</div>
+
+      
+
       {/* ULTRA-COMPACT COMFORTABLE KPI MATRIX */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Avg Risk Score", value: "72%", glowColor: "hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]", textStyle: "text-rose-400" },
-          { label: "Predicted Disruptions", value: "14 Nodes", glowColor: "hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(245,158,11,0.15)]", textStyle: "text-amber-400" },
-          { label: "Forecast Accuracy", value: "92%", glowColor: "hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)]", textStyle: "text-cyan-400" },
-          { label: "Inventory Health", value: "84%", glowColor: "hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)]", textStyle: "text-emerald-400" },
+          {
+            label: "Avg Risk Score",
+            value: `${riskData.riskScore}%`,
+            glowColor: "hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]",
+            textStyle: "text-rose-400"
+          },
+          {
+            label: "Predicted Disruptions",
+            value: `${riskData.disruptions} Nodes`,
+            glowColor: "hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]",
+            textStyle: "text-amber-400"
+          },
+          {
+            label: "Forecast Accuracy",
+            value: `${riskData.accuracy}%`,
+            glowColor: "hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]",
+            textStyle: "text-cyan-400"
+          },
+          {
+            label: "Inventory Health",
+            value: `${riskData.inventoryHealth}%`,
+            glowColor: "hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]",
+            textStyle: "text-emerald-400"
+          }
         ].map((item, i) => (
           <motion.div
             key={item.label}
@@ -197,9 +339,21 @@ export default function RiskEnginePage() {
 
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { title: "Recommended Action", value: "Shift Route to Vietnam", style: "text-cyan-400 border-cyan-500/20" },
-              { title: "Expected Savings Matrix", value: "$4.2M Sourcing Offset", style: "text-emerald-400 border-emerald-500/20" },
-              { title: "Risk Anomaly Reduction", value: "34% System Compression", style: "text-emerald-400 border-emerald-500/20" },
+              {
+                title: "Recommended Action",
+                value: riskData.recommendation,
+                style: "text-cyan-400 border-cyan-500/20"
+              },
+              {
+                title: "Expected Savings Matrix",
+                value: riskData.savings,
+                style: "text-emerald-400 border-emerald-500/20"
+              },
+              {
+                title: "Risk Anomaly Reduction",
+                value: `${Math.floor(riskData.riskScore / 2)}% Reduction`,
+                style: "text-emerald-400 border-emerald-500/20"
+              }
             ].map((box, i) => (
               <div key={i} className={`bg-slate-950/40 p-3 rounded-xl border ${box.style.split(' ')[1]} shadow-inner`}>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{box.title}</p>

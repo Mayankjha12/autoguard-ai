@@ -5,17 +5,94 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SuppliersPage() {
   const [search, setSearch] = useState('');
+  const [countryFilter, setCountryFilter] = useState("All Countries");
+  const [materialFilter, setMaterialFilter] = useState("All Materials");
+  const [riskFilter, setRiskFilter] = useState("All Risks");
 
   const suppliers = [
     { name: "Tata Components", country: "India", material: "Steel", quality: "94%", leadTime: "12 Days", risk: "Low" },
     { name: "Shanghai SemiTech", country: "China", material: "Semiconductors", quality: "88%", leadTime: "27 Days", risk: "High" },
     { name: "Samsung SDI", country: "South Korea", material: "Battery Cells", quality: "96%", leadTime: "10 Days", risk: "Low" },
     { name: "Panasonic Energy", country: "Japan", material: "Battery Packs", quality: "92%", leadTime: "14 Days", risk: "Medium" },
+    {
+      name: "Bosch Mobility",
+      country: "Germany",
+      material: "Sensors",
+      quality: "95%",
+      leadTime: "11 Days",
+      risk: "Low"
+    },
+    {
+      name: "Foxconn Industrial",
+      country: "Taiwan",
+      material: "Electronics",
+      quality: "89%",
+      leadTime: "18 Days",
+      risk: "Medium"
+    },
+    {
+      name: "LG Energy Solution",
+      country: "South Korea",
+      material: "Battery Cells",
+      quality: "97%",
+      leadTime: "9 Days",
+      risk: "Low"
+    },
+    {
+      name: "Infineon Technologies",
+      country: "Germany",
+      material: "Semiconductors",
+      quality: "93%",
+      leadTime: "16 Days",
+      risk: "Low"
+    },
+    {
+      name: "VinFast Components",
+      country: "Vietnam",
+      material: "Steel",
+      quality: "87%",
+      leadTime: "13 Days",
+      risk: "Medium"
+    },
+    {
+      name: "Texas Micro Systems",
+      country: "USA",
+      material: "Semiconductors",
+      quality: "91%",
+      leadTime: "15 Days",
+      risk: "Low"
+    }
   ];
 
-  const filtered = suppliers.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const countries = [...new Set(suppliers.map((s) => s.country))];
+  const materials = [...new Set(suppliers.map((s) => s.material))];
+  const risks = [...new Set(suppliers.map((s) => s.risk))];
+
+  const filtered = suppliers.filter((s) => {
+    const matchesSearch =
+      s.name.toLowerCase().includes(search.toLowerCase()) ||
+      s.country.toLowerCase().includes(search.toLowerCase()) ||
+      s.material.toLowerCase().includes(search.toLowerCase());
+  
+    const matchesCountry =
+      countryFilter === "All Countries" ||
+      s.country === countryFilter;
+  
+    const matchesMaterial =
+      materialFilter === "All Materials" ||
+      s.material === materialFilter;
+  
+    const matchesRisk =
+      riskFilter === "All Risks" ||
+      s.risk === riskFilter;
+  
+    return (
+      matchesSearch &&
+      matchesCountry &&
+      matchesMaterial &&
+      matchesRisk
+    );
+  });
 
   return (
     <div className="min-h-screen bg-[#030712] text-white p-6 lg:p-8 space-y-6 selection:bg-cyan-500/30">
@@ -42,14 +119,38 @@ export default function SuppliersPage() {
             placeholder="Search supplier matrix..."
             className="bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-2.5 text-xs w-64 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/10 transition-all outline-none text-slate-200 placeholder:text-slate-500 shadow-inner"
           />
-          {["Country", "Material", "Risk"].map((f) => (
-            <select
-              key={f}
-              className="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-400 cursor-pointer outline-none hover:border-slate-700 transition-colors"
-            >
-              <option>All {f}s</option>
-            </select>
-          ))}
+          <select
+  value={countryFilter}
+  onChange={(e) => setCountryFilter(e.target.value)}
+  className="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-400"
+>
+  <option>All Countries</option>
+  {countries.map((country) => (
+    <option key={country}>{country}</option>
+  ))}
+</select>
+
+<select
+  value={materialFilter}
+  onChange={(e) => setMaterialFilter(e.target.value)}
+  className="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-400"
+>
+  <option>All Materials</option>
+  {materials.map((material) => (
+    <option key={material}>{material}</option>
+  ))}
+</select>
+
+<select
+  value={riskFilter}
+  onChange={(e) => setRiskFilter(e.target.value)}
+  className="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-400"
+>
+  <option>All Risks</option>
+  {risks.map((risk) => (
+    <option key={risk}>{risk}</option>
+  ))}
+</select>
         </div>
       </div>
 
