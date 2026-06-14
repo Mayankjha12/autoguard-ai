@@ -14,12 +14,7 @@ import {
 
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 
-const COLORS_TOP = [
-  "#06B6D4",
-  "#2563EB",
-  "#7C3AED",
-  "#0EA5E9",
-];
+const COLORS_TOP = ["#06B6D4", "#2563EB", "#7C3AED", "#0EA5E9"];
 
 export function AuroraHero() {
   const color = useMotionValue(COLORS_TOP[0]);
@@ -50,40 +45,39 @@ export function AuroraHero() {
   `;
 
   const words = [
-    {
-      text: "AI-Powered",
-    },
-    {
-      text: "Supply",
-    },
-    {
-      text: "Chain",
-    },
-    {
-      text: "Intelligence",
-      className: "text-cyan-400",
-    },
+    { text: "AI-Powered" },
+    { text: "Supply" },
+    { text: "Chain" },
+    { text: "Intelligence", className: "text-cyan-400" },
   ];
 
   return (
     <motion.section
-      style={{
-        backgroundImage,
-      }}
+      style={{ backgroundImage }}
       className="relative overflow-hidden min-h-screen px-6"
     >
-      {/* Stars Background */}
-      <div className="absolute inset-0 z-0">
-        <Canvas>
-          <Stars
-            radius={50}
-            count={2500}
-            factor={4}
-            fade
-            speed={2}
-          />
-        </Canvas>
-      </div>
+      {/* DARK BACKGROUND FIX OVERLAY */}
+      <div className="absolute inset-0 bg-[#020617]/80 z-0" />
+
+      {/* Stars Background (FIXED) */}
+     {/* Stars Background (SOFT VERSION FIX) */}
+<div className="absolute inset-0 z-0 opacity-20">
+  <Canvas>
+    <Stars
+      radius={120}
+      count={800}     // 🔥 earlier 2500 → too noisy
+      factor={1.5}    // 🔥 reduce brightness
+      fade
+      speed={0.5}
+    />
+  </Canvas>
+</div>
+
+{/* DARK SMOOTH OVERLAY (IMPORTANT FIX) */}
+<div className="absolute inset-0 z-0 bg-[#020617]/90" />
+
+{/* EXTRA BLUR LAYER (removes grain illusion) */}
+<div className="absolute inset-0 z-0 backdrop-blur-[1px]" />
 
       {/* Content */}
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center text-center">
@@ -109,10 +103,9 @@ export function AuroraHero() {
           transition={{ delay: 0.3 }}
           className="max-w-3xl text-lg text-slate-300 md:text-xl"
         >
-          Monitor suppliers, predict disruptions,
-          optimize inventory, reduce operational
-          risk, and make smarter supply chain
-          decisions with advanced AI insights.
+          Monitor suppliers, predict disruptions, optimize inventory,
+          reduce operational risk, and make smarter supply chain decisions
+          with advanced AI insights.
         </motion.p>
 
         {/* Buttons */}
@@ -120,16 +113,9 @@ export function AuroraHero() {
 
           <Link href="/search">
             <motion.button
-              style={{
-                border,
-                boxShadow,
-              }}
-              whileHover={{
-                scale: 1.05,
-              }}
-              whileTap={{
-                scale: 0.95,
-              }}
+              style={{ border, boxShadow }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="rounded-full bg-slate-950/40 px-6 py-3 text-white backdrop-blur-md"
             >
               <div className="flex items-center gap-2">
@@ -140,12 +126,8 @@ export function AuroraHero() {
           </Link>
 
           <motion.button
-            whileHover={{
-              scale: 1.05,
-            }}
-            whileTap={{
-              scale: 0.95,
-            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             className="rounded-full bg-cyan-500 px-6 py-3 font-semibold text-black"
           >
             Generate Report
@@ -156,41 +138,22 @@ export function AuroraHero() {
         {/* Stats */}
         <div className="mt-20 grid w-full max-w-6xl grid-cols-2 gap-6 md:grid-cols-4">
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-            <h3 className="text-4xl font-bold text-cyan-400">
-              247+
-            </h3>
-            <p className="mt-2 text-slate-400">
-              Suppliers
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-            <h3 className="text-4xl font-bold text-cyan-400">
-              18
-            </h3>
-            <p className="mt-2 text-slate-400">
-              Risk Alerts
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-            <h3 className="text-4xl font-bold text-cyan-400">
-              82%
-            </h3>
-            <p className="mt-2 text-slate-400">
-              Inventory Health
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-            <h3 className="text-4xl font-bold text-cyan-400">
-              $4.2M
-            </h3>
-            <p className="mt-2 text-slate-400">
-              Potential Savings
-            </p>
-          </div>
+          {[
+            ["247+", "Suppliers"],
+            ["18", "Risk Alerts"],
+            ["82%", "Inventory Health"],
+            ["$4.2M", "Potential Savings"],
+          ].map(([num, label]) => (
+            <div
+              key={label}
+              className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
+            >
+              <h3 className="text-4xl font-bold text-cyan-400">
+                {num}
+              </h3>
+              <p className="mt-2 text-slate-400">{label}</p>
+            </div>
+          ))}
 
         </div>
 
