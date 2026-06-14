@@ -59,6 +59,24 @@ Provide a clear recommendation with reasoning.
 Keep responses concise, practical and business focused.
 
 Act like a real enterprise supply chain advisor.
+
+IMPORTANT:
+
+Return plain text only.
+
+Never use:
+#
+##
+###
+**
+***
+---
+markdown tables
+
+Do not use markdown formatting.
+
+Use simple paragraphs and numbered lists only.
+
 `,
           },
           {
