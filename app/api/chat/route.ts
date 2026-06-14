@@ -94,12 +94,19 @@ Use simple paragraphs and numbered lists only.
     );
 
     const reply =
-      completion?.choices?.[0]?.message?.content;
+  completion?.choices?.[0]?.message?.content || "";
 
-    return NextResponse.json({
-      response:
-        reply || "No response generated",
-    });
+const cleanReply = reply
+  .replace(/#{1,6}\s/g, "")
+  .replace(/\*\*/g, "")
+  .replace(/\*/g, "")
+  .replace(/---/g, "")
+  .replace(/`/g, "")
+  .trim();
+
+return NextResponse.json({
+  response: cleanReply || "No response generated",
+});
 
   } catch (error: any) {
 
