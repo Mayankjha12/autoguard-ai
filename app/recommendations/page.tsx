@@ -10,7 +10,20 @@ export default function RecommendationsPage() {
   const [impactScore, setImpactScore] = useState(82);
   const [priorityActions, setPriorityActions] = useState<string[]>([]);
 const [feedItems, setFeedItems] = useState<string[]>([]);
-
+const [suppliers, setSuppliers] = useState([
+  {
+    current: "Shanghai SemiTech Core",
+    risk: "87%",
+    recommended: "Samsung SDI Corp",
+    reduction: "65% Offset",
+  },
+  {
+    current: "Battery Matrix China Ltd",
+    risk: "79%",
+    recommended: "Panasonic Energy Global",
+    reduction: "51% Offset",
+  },
+]);
 const [netSavings, setNetSavings] = useState("$1.8M");
   const [executiveBrief, setExecutiveBrief] = useState(
     "Awaiting executive analysis..."
@@ -87,6 +100,39 @@ setFeedItems([
 
   "Reduce geopolitical dependency risks."
 ]);
+
+setSuppliers(
+  score > 90
+    ? [
+        {
+          current: "China Semiconductor Hub",
+          risk: "91%",
+          recommended: "Vietnam Tech Manufacturing",
+          reduction: "72% Offset",
+        },
+        {
+          current: "Battery Minerals China",
+          risk: "83%",
+          recommended: "Panasonic Energy Global",
+          reduction: "58% Offset",
+        },
+      ]
+    : [
+        {
+          current: "Shanghai SemiTech Core",
+          risk: "87%",
+          recommended: "Samsung SDI Corp",
+          reduction: "65% Offset",
+        },
+        {
+          current: "Battery Matrix China Ltd",
+          risk: "79%",
+          recommended: "Panasonic Energy Global",
+          reduction: "51% Offset",
+        },
+      ]
+);
+
 const brief =
   score > 90
     ? `High-impact optimization opportunity identified. AI projects major sourcing savings and significant supply chain risk reduction.`
@@ -255,10 +301,7 @@ setMetrics({
           <div className="rounded-xl p-4 bg-gradient-to-b from-slate-900 via-[#0a1024] to-[#020512] border border-slate-800 shadow-xl flex-1 flex flex-col min-h-0">
             <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-800/60 pb-2 mb-3 shrink-0">Alternate Supplier Diversification</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1 overflow-y-auto pr-0.5 scrollbar-thin items-stretch">
-              {[
-                { current: 'Shanghai SemiTech Core', risk: '87%', recommended: 'Samsung SDI Corp', reduction: '65% Offset' },
-                { current: 'Battery Matrix China Ltd', risk: '79%', recommended: 'Panasonic Energy Global', reduction: '51% Offset' },
-              ].map((s) => (
+              {suppliers.map((s) => (
                 <div
                   key={s.current}
                   className="p-4 rounded-xl bg-slate-950/50 border border-slate-800 flex flex-col justify-between transition-colors hover:border-purple-500/30 group"
