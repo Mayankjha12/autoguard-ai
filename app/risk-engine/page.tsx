@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 export default function RiskEnginePage() {
   const [scenario, setScenario] = useState("");
 const [loading, setLoading] = useState(false);
+const [loadingText, setLoadingText] = useState("");
 
 const [riskData, setRiskData] = useState({
   riskScore: 72,
@@ -16,10 +17,54 @@ const [riskData, setRiskData] = useState({
 savings: "$4.2M Sourcing Offset",
 });
 
+const [forecastData, setForecastData] = useState([60, 90, 75, 120, 140, 110]);
+
+const [threats, setThreats] = useState([
+  { title: "Taiwan Chip", status: "Critical" },
+  { title: "Red Sea Ship", status: "Delayed" },
+  { title: "Vietnam Cap", status: "Stable" },
+]);
+
+const [stockoutData, setStockoutData] = useState({
+  battery: 9,
+  semiconductor: 14,
+});
+
+const [summary, setSummary] = useState(
+  "Awaiting AI analysis..."
+);
+
+const riskColor =
+  riskData.riskScore > 80
+    ? "text-red-400"
+    : riskData.riskScore > 50
+    ? "text-amber-400"
+    : "text-emerald-400";
+
+const riskTrend =
+  riskData.riskScore > 80
+    ? "⬆ Rising Risk"
+    : riskData.riskScore > 50
+    ? "⚠ Moderate Risk"
+    : "⬇ Stable Risk";
+
 const analyzeScenario = async () => {
   if (!scenario.trim()) return;
 
   setLoading(true);
+  setLoadingText("Scanning Suppliers...");
+
+setTimeout(() => {
+  setLoadingText("Analyzing Routes...");
+}, 1000);
+
+setTimeout(() => {
+  setLoadingText("Running Risk Model...");
+}, 2000);
+
+setTimeout(() => {
+  setLoadingText("Generating Recommendations...");
+}, 3000);
 
   try {
     const res = await fetch("/api/chat", {
@@ -89,6 +134,58 @@ disruptions must be a NUMBER, not a list.
         recommendation: parsed.recommendation ?? "Monitor Supply Chain",
         savings: parsed.savings ?? "$1M",
       });
+
+
+
+      setForecastData([
+        Math.max(20, parsed.inventoryHealth - 15),
+        Math.max(30, parsed.inventoryHealth),
+        parsed.riskScore,
+        Math.min(140, parsed.riskScore + 10),
+        Math.min(140, parsed.inventoryHealth + 15),
+        Math.min(140, parsed.inventoryHealth + 15),
+      ]);
+      
+      setStockoutData({
+        battery: Math.max(
+          2,
+          Math.floor(parsed.inventoryHealth / 8)
+        ),
+        semiconductor: Math.max(
+          3,
+          Math.floor(parsed.inventoryHealth / 6)
+        ),
+      });
+      
+      setThreats([
+        {
+          title: "Taiwan Chip",
+          status:
+            parsed.riskScore > 80
+              ? "Critical"
+              : parsed.riskScore > 50
+              ? "Delayed"
+              : "Stable",
+        },
+        {
+          title: "Red Sea Ship",
+          status:
+            parsed.disruptions > 10
+              ? "Critical"
+              : "Delayed",
+        },
+        {
+          title: "Vietnam Cap",
+          status:
+            parsed.inventoryHealth > 70
+              ? "Stable"
+              : "Warning",
+        },
+      ]);
+      
+      setSummary(
+        `AI analysis indicates a ${parsed.riskScore}% risk profile with ${parsed.disruptions} potential disruptions. Inventory health is estimated at ${parsed.inventoryHealth}% and the recommended action is ${parsed.recommendation}.`
+      );
     
     } catch (e) {
       console.log("JSON Parse Failed", e);
@@ -134,14 +231,13 @@ disruptions must be a NUMBER, not a list.
 
     <button
       onClick={analyzeScenario}
-      className="px-6 rounded-xl bg-cyan-500 text-black font-bold"
+      className="px-6 rounded-xl bg-cyan-500 text-black font-bold min-w-[220px]"
     >
-      {loading ? "Analyzing..." : "Analyze"}
+      {loading ? loadingText : "Analyze"}
     </button>
   </div>
 </div>
 
-      
 
       {/* ULTRA-COMPACT COMFORTABLE KPI MATRIX */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -150,7 +246,7 @@ disruptions must be a NUMBER, not a list.
             label: "Avg Risk Score",
             value: `${riskData.riskScore}%`,
             glowColor: "hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)]",
-            textStyle: "text-rose-400"
+            textStyle: riskColor
           },
           {
             label: "Predicted Disruptions",
@@ -197,22 +293,34 @@ disruptions must be a NUMBER, not a list.
           <div className="rounded-2xl p-5 bg-gradient-to-b from-slate-900 via-[#0a1024] to-[#020512] border-2 border-slate-800/90 shadow-2xl space-y-3.5">
             <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-800/60 pb-2">Active Strategic Threats</h2>
             <div className="grid grid-cols-3 gap-3">
-              {[
-                { title: "Taiwan Chip", status: "Critical", border: "hover:border-red-500/40", bg: "bg-red-500/10", text: "text-red-400" },
-                { title: "Red Sea Ship", status: "Delayed", border: "hover:border-amber-500/40", bg: "bg-amber-500/10", text: "text-amber-400" },
-                { title: "Vietnam Cap", status: "Stable", border: "hover:border-emerald-500/40", bg: "bg-emerald-500/10", text: "text-emerald-400" },
-              ].map((item) => (
-                <motion.div
-                  key={item.title}
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  className={`p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center cursor-pointer transition-colors ${item.border}`}
-                >
-                  <p className="text-slate-400 text-[11px] font-bold truncate">{item.title}</p>
-                  <span className={`inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide ${item.bg} ${item.text}`}>
-                    {item.status}
-                  </span>
-                </motion.div>
-              ))}
+            {threats.map((item) => {
+  const statusStyle =
+    item.status === "Critical"
+      ? "bg-red-500/10 text-red-400"
+      : item.status === "Delayed"
+      ? "bg-amber-500/10 text-amber-400"
+      : item.status === "Warning"
+      ? "bg-orange-500/10 text-orange-400"
+      : "bg-emerald-500/10 text-emerald-400";
+
+  return (
+    <motion.div
+      key={item.title}
+      whileHover={{ scale: 1.04, y: -2 }}
+      className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center"
+    >
+      <p className="text-slate-400 text-[11px] font-bold truncate">
+        {item.title}
+      </p>
+
+      <span
+        className={`inline-block mt-2 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide ${statusStyle}`}
+      >
+        {item.status}
+      </span>
+    </motion.div>
+  );
+})}
             </div>
           </div>
 
@@ -254,7 +362,7 @@ disruptions must be a NUMBER, not a list.
 
             {/* CHART DISPLAY BLOCK */}
             <div className="mt-4 h-[150px] rounded-xl border border-slate-900 bg-slate-950/40 flex items-end justify-between gap-3 p-4 relative overflow-hidden">
-              {[60, 90, 75, 120, 140, 110].map((h, i) => (
+              {forecastData.map((h, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center group/bar cursor-pointer">
                   <motion.div
                     initial={{ height: 0 }}
@@ -279,8 +387,8 @@ disruptions must be a NUMBER, not a list.
           <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-800/60 pb-2">Stockout Operational Prediction</h2>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { name: "Battery Modules", days: 9, border: "border-rose-500/20", color: "text-rose-400 bg-rose-500/5" },
-              { name: "Semiconductors Matrix", days: 14, border: "border-amber-500/20", color: "text-amber-400 bg-amber-500/5" },
+              { name: "Battery Modules", days: stockoutData.battery, border: "border-rose-500/20", color: "text-rose-400 bg-rose-500/5" },
+              { name: "Semiconductors Matrix", days: stockoutData.semiconductor, border: "border-amber-500/20", color: "text-amber-400 bg-amber-500/5" },
             ].map((item) => (
               <motion.div 
                 key={item.name} 
@@ -334,8 +442,11 @@ disruptions must be a NUMBER, not a list.
           </div>
 
           <p className="text-xs text-slate-300 mt-3 leading-6 font-medium">
-            Systemic volatility spiked in East Asia channels due to microcomponent delays. AI Core tracking systems recommend dynamic inventory balancing across alternative routes in South Asia.
+          {summary}
           </p>
+          <div className="mt-3 text-xs font-bold text-cyan-400">
+  {riskTrend}
+</div>
 
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
